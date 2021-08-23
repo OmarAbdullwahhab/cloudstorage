@@ -10,8 +10,10 @@
     </head>
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
+            <h1>Welcome <span th:text="${currentUser.firstName}"></span>,
+                <span th:text="${currentUser.lastName}"></span> <span th:text="${currentUser.userid}"></span></h1>
             <div id="logoutDiv">
-                <form action="#" method="POST">
+                <form action="#" method="POST" th:action="@{/logout}">
                     <button type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
@@ -19,20 +21,20 @@
                 <nav style="clear: right;">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link active" id="nav-files-tab" data-toggle="tab" href="#nav-files" role="tab" aria-controls="nav-files" aria-selected="true">Files</a>
-                        <a class="nav-item nav-link" id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</a>
-                        <a class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a>
+                        <a class="nav-item nav-link"  id="nav-notes-tab" data-toggle="tab" href="#nav-notes" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</a>
+                        <a class="nav-item nav-link"  id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" enctype="multipart/form-data" method="POST">
+                        <form action="#" th:action="@{/files}" enctype="multipart/form-data" method="POST" >
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
                                         <label for="fileUpload">Upload a New File:</label>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
+                                        <input type="file" class="form-control-file" id="fileUpload" name="fileUpload" required>
                                     </div>
                                     <div class="col-sm-4">
                                         <button type="submit" class="btn btn-dark">Upload</button>
@@ -44,17 +46,19 @@
                             <table class="table table-striped" id="fileTable">
                                 <thead>
                                     <tr>
-                                        <th style="width: 20%" scope="col"></th>
+                                        <th style="width: 20%" scope="col">Actions</th>
                                         <th style="width: 80%" scope="col">File Name</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="file : ${files}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <a target="_blank" class="btn btn-success" th:href="@{/files/view/{id}(id=${file.fileId})}">View</a>
+                                        <a  class="btn btn-danger" href="#" th:data-href="@{/files/delete/{id}(id=${file.fileId})}" onclick="showConfirmDelete(this)">Delete</a>
                                     </td>
-                                    <th scope="row">ExampleFile.txt</th>
+                                    <th scope="row" th:text="${file.fileName}">ExampleFile.txt</th>
+
                                 </tr>
                                 </tbody>
                             </table>
@@ -69,19 +73,23 @@
                             <table class="table table-striped" id="userTable">
                                 <thead>
                                     <tr>
-                                        <th style="width: 20%" scope="col"></th>
+                                        <th style="width: 20%" scope="col">Actions</th>
                                         <th style="width: 20%" scope="col">Title</th>
                                         <th style="width: 60%" scope="col">Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <button type="button" class="btn btn-success"
+                                                    th:data-noteid="${note.noteid}"
+                                                    th:data-title="${note.title}" th:data-desc="${note.description}"
+                                                    onclick="showNoteModal(this.getAttribute('data-noteid'),this.getAttribute('data-title'),this.getAttribute('data-desc'))">Edit</button>
+
+                                            <a  class="btn btn-danger" href="#" th:data-href="@{/notes/delete/{id}(id=${note.noteid})}" onclick="showConfirmDelete(this)">Delete</a>
                                         </td>
-                                        <th scope="row">Example Note Title</th>
-                                        <td>Example Note Description </td>
+                                        <th scope="row" th:text="${note.title}">Example Note Title</th>
+                                        <td th:text="${note.description}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -97,15 +105,15 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
-                                            <input type="hidden" name="noteId" id="note-id">
+                                        <form action="#" method="POST" th:action="@{/notes}" th:object="${noteForm}">
+                                            <input type="hidden" th:field="*{noteid}" name="noteid" id="note-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
-                                                <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
+                                                <input type="text" th:field="*{title}" name= "title" class="form-control" id="note-title" maxlength="20" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="note-description" class="col-form-label">Description</label>
-                                                <textarea class="form-control" name="noteDescription" id="note-description" rows="5" maxlength="1000" required></textarea>
+                                                <textarea class="form-control" th:field="*{description}" name="description" id="note-description" rows="5" maxlength="1000" required></textarea>
                                             </div>
                                             <button id="noteSubmit" type="submit" class="d-none"></button>
                                         </form>
@@ -124,7 +132,7 @@
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" th:object="${credentials}" id="credentialTable">
+                            <table class="table table-striped" id="credentialTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
@@ -134,14 +142,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="cred : ${credentialsList}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+
+
+                                        <button type="button" class="btn btn-success"
+                                                th:data-credid="${cred.credentialid}" th:data-url="${cred.url}"
+                                                th:data-user="${cred.username}" th:data-password="${cred.password}"
+                                                onclick="showCredentialModal(this.getAttribute('data-credid'),
+                                                this.getAttribute('data-url'),this.getAttribute('data-user'),this.getAttribute('data-password'))">Edit</button>
+
+                                        <a  class="btn btn-danger" href="#" th:data-href="@{/credentials/delete/{id}(id=${cred.credentialid})}" onclick="showConfirmDelete(this)">Delete</a>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <th scope="row" th:text="${cred.url}">Example Credential URL</th>
+                                    <td th:text="${cred.username}">Example Credential Username</td>
+                                    <td th:text="${cred.password}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -157,19 +172,19 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
-                                            <input type="hidden" name="credentialId" id="credential-id">
+                                        <form action="#" method="POST" th:object="${credentialForm}" th:action="@{/credentials}">
+                                            <input type="hidden" th:field="*{credentialid}" name="credentialid" id="credential-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">URL</label>
-                                                <input type="text" name= "url" class="form-control" id="credential-url" maxlength="100" required>
+                                                <input type="text" th:field="*{url}" name= "url" class="form-control" id="credential-url" maxlength="100" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Username</label>
-                                                <input type="text" name= "username" class="form-control" id="credential-username" maxlength="30" required>
+                                                <input type="text" th:field="*{username}" name= "username" class="form-control" id="credential-username" maxlength="30" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Password</label>
-                                                <input type="text" name= "password" class="form-control" id="credential-password" maxlength="30" required>
+                                                <input type="text" th:field="*{password}" name= "password" class="form-control" id="credential-password" maxlength="30" required>
                                             </div>
                                             <button id="credentialSubmit" type="submit" class="d-none"></button>
                                         </form>
@@ -179,6 +194,28 @@
                                         <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteLabel">Confirm Delete!</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Are you sure you want to delete this record?</h5>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                                <a id="confirm-delete-link" href="#" class="btn btn-danger" data-dismiss="model">Yes</a>
                             </div>
                         </div>
                     </div>
@@ -208,6 +245,13 @@
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+            function showConfirmDelete(target)
+            {
+               url = target.getAttribute('data-href');
+               $("#confirm-delete-link").attr("href",url);
+               $('#confirmDeleteModal').modal('show');
+            }
+
         </script>
     </body>
 </html>
