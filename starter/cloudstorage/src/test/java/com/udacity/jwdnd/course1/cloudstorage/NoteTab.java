@@ -1,11 +1,14 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class NoteForm {
+public class NoteTab {
 
 
     @FindBy(id="note-id")
@@ -20,9 +23,24 @@ public class NoteForm {
     @FindBy(id = "noteSubmit")
     private WebElement submitButton;
 
-    public NoteForm(WebDriver driver)
+    @FindBy(id="add-note-btn")
+    private WebElement addNoteButton;
+
+    @FindBy(id="nav-notes-tab")
+    private WebElement noteTabLink;
+
+
+    public NoteTab(WebDriver driver)
     {
         PageFactory.initElements(driver,this);
+    }
+
+    public WebElement getAddNoteButton() {
+        return addNoteButton;
+    }
+
+    public void setAddNoteButton(WebElement addNoteButton) {
+        this.addNoteButton = addNoteButton;
     }
 
     public WebElement getNoteId() {
@@ -59,14 +77,33 @@ public class NoteForm {
 
     public void fillForm(String id, String title, String desc)
     {
-        this.noteId.sendKeys(id);
+        //this.noteId.sendKeys(id);
         this.noteTitle.sendKeys(title);
         this.noteDescription.sendKeys(desc);
     }
 
-    public void submitForm()
+    public void submitForm(WebDriver driver)
     {
-        this.submitButton.click();
+
+        //$('#noteSubmit').click();
+        ((JavascriptExecutor) driver).executeScript("$('#noteSubmit').click();");
     }
 
+    public void openTab()
+    {
+        this.noteTabLink.click();
+    }
+    public void showAddDialog(WebDriver driver)
+    {
+        WebDriverWait wait = new WebDriverWait(driver,100);
+        wait.until((x) -> x.findElement(By.id("add-note-btn")).isDisplayed());
+
+         this.addNoteButton.click();
+        //WebDriverWait wait = new WebDriverWait(driver,100);
+       // wait.until((x) -> x.findElement(By.id("note-id")).isDisplayed());
+
+        //((JavascriptExecutor) driver).executeScript("document.getElementById('ID').style.display='block';");
+
+
+    }
 }

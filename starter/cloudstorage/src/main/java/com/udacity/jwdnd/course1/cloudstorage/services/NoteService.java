@@ -22,7 +22,6 @@ public class NoteService {
 
     public List<NoteForm> getAllNotes(Integer userId)
     {
-
         List<Note> data = this.noteMapper.selectAll(userId);
         if(data == null)
             return null;
