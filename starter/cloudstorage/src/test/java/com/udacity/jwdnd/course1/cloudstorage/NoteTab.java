@@ -26,6 +26,12 @@ public class NoteTab {
     @FindBy(id="add-note-btn")
     private WebElement addNoteButton;
 
+    @FindBy(className="btn-success")
+    private WebElement editNoteButton;
+
+    @FindBy(className="btn-danger")
+    private WebElement deleteNoteButton;
+
     @FindBy(id="nav-notes-tab")
     private WebElement noteTabLink;
 
@@ -78,6 +84,8 @@ public class NoteTab {
     public void fillForm(String id, String title, String desc)
     {
         //this.noteId.sendKeys(id);
+        this.noteTitle.clear();
+        this.noteDescription.clear();
         this.noteTitle.sendKeys(title);
         this.noteDescription.sendKeys(desc);
     }
@@ -95,7 +103,7 @@ public class NoteTab {
     }
     public void showAddDialog(WebDriver driver)
     {
-        WebDriverWait wait = new WebDriverWait(driver,100);
+        WebDriverWait wait = new WebDriverWait(driver,5);
         wait.until((x) -> x.findElement(By.id("add-note-btn")).isDisplayed());
 
          this.addNoteButton.click();
@@ -103,6 +111,23 @@ public class NoteTab {
        // wait.until((x) -> x.findElement(By.id("note-id")).isDisplayed());
 
         //((JavascriptExecutor) driver).executeScript("document.getElementById('ID').style.display='block';");
+
+
+    }
+    public void showEditDialog(WebDriver driver)
+    {
+        WebDriverWait wait = new WebDriverWait(driver,5);
+        wait.until((x) -> x.findElement(By.className("btn-success")).isDisplayed());
+
+        this.editNoteButton.click();
+    }
+
+    public void showDeleteDialog(WebDriver driver)
+    {
+        WebDriverWait wait = new WebDriverWait(driver,5);
+        wait.until((x) -> x.findElement(By.className("btn-danger")).isDisplayed());
+
+        this.deleteNoteButton.click();
 
 
     }

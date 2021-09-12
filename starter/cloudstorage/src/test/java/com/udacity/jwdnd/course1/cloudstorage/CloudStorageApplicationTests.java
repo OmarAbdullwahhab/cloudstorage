@@ -47,6 +47,14 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	public void testHomepageIsNotAccessibleBeforeLogin()
+	{
+		driver.get("http://localhost:" + this.port + "/home");
+
+		Assertions.assertNotEquals("Home", driver.getTitle());
+	}
+
+	@Test
 	public void testLogin() throws InterruptedException {
 		driver.get("http://localhost:" + this.port + "/login");
 
