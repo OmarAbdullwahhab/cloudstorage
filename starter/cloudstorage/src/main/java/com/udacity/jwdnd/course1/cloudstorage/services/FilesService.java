@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
 
+import com.udacity.jwdnd.course1.cloudstorage.exceptions.DuplicateFileException;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -23,9 +25,12 @@ public class FilesService {
         this.fileMapper = fileMapper;
     }
 
-    public int AddFile(MultipartFile uploadedFile, Integer userId)  {
+    public int AddFile(MultipartFile uploadedFile, Integer userId) throws DuplicateFileException  {
 
+        if(this.getFilesCount(uploadedFile.getOriginalFilename(),userId) > 0)
+            throw new DuplicateFileException("File " + uploadedFile.getOriginalFilename() + " already added");
         try {
+
             File file = new File();
             file.setFileName(uploadedFile.getOriginalFilename());
             file.setContentType(uploadedFile.getContentType());
@@ -54,5 +59,11 @@ public class FilesService {
     {
         return this.fileMapper.getFile(fileId,userId);
     }
+
+    public Integer getFilesCount(String filename, Integer userId)
+    {
+        return this.fileMapper.getFilesCount(filename,userId);
+    }
+
 
 }

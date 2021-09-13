@@ -23,7 +23,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping("/")
 public class HomeController {
 
     private AuthenticationService authenticationService;
@@ -55,7 +55,10 @@ public class HomeController {
         this.credentialService = credentialService;
     }
 
-    @GetMapping
+
+
+
+    @GetMapping({"/","/home"})
     public String home(Model model)
     {
         model.addAttribute("currentUser", this.authenticationService.currentLoggedInUser());

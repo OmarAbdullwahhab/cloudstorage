@@ -24,8 +24,8 @@ public class UserServiceTests {
         frm = new SignupForm();
         frm.setFirstName("Test");
         frm.setLastName("Tester");
-        frm.setUsername("tester");
-        frm.setPassword("tester");
+        frm.setUsername("app1");
+        frm.setPassword("app1");
 
     }
 

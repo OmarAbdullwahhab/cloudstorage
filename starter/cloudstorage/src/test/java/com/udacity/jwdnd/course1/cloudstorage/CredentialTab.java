@@ -29,10 +29,10 @@ public class CredentialTab {
     @FindBy(id="add-cred-btn")
     private WebElement addCredentialButton;
 
-    @FindBy(className="btn-success")
+    @FindBy(className="editBtn")
     private WebElement editCredentialButton;
 
-    @FindBy(className="btn-danger")
+    @FindBy(className="deleteBtn")
     private WebElement deleteCredentialButton;
 
     @FindBy(id="nav-credentials-tab")
@@ -129,16 +129,14 @@ public class CredentialTab {
     public void showEditDialog(WebDriver driver)
     {
         WebDriverWait wait = new WebDriverWait(driver,5);
-        wait.until((x) -> x.findElement(By.className("btn-success")).isDisplayed());
-
+        wait.until((x) -> x.findElement(By.className("editBtn")).isDisplayed());
         this.editCredentialButton.click();
     }
 
     public void showDeleteDialog(WebDriver driver)
     {
         WebDriverWait wait = new WebDriverWait(driver,5);
-        wait.until((x) -> x.findElement(By.className("btn-danger")).isDisplayed());
-
+        wait.until((x) -> x.findElement(By.className("deleteBtn")).isDisplayed());
         this.deleteCredentialButton.click();
 
 

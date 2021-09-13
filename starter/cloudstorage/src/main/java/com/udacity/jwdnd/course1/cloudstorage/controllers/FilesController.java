@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 
+import com.udacity.jwdnd.course1.cloudstorage.exceptions.DuplicateFileException;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.services.AuthenticationService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FilesService;
@@ -45,7 +46,16 @@ public class FilesController {
     public String handleFileUpload(@RequestParam("fileUpload") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
         int userId = this.authenticationService.currentLoggedInUser().getUserid();
-        filesService.AddFile(file,userId);
+
+
+        try {
+            filesService.AddFile(file,userId);
+        } catch (DuplicateFileException e) {
+            redirectAttributes.addFlashAttribute("error",
+                    e.getMessage());
+
+            return "redirect:/home";
+        }
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 

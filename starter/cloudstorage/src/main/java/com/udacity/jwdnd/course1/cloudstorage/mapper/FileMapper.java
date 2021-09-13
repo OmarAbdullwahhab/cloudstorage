@@ -22,6 +22,7 @@ public interface FileMapper {
     @Select("SELECT * FROM FILES WHERE userid = #{userId}")
     List<File> selectAll(int userId);
 
+
     @Insert("INSERT INTO FILES (filename, contenttype,filesize, userid,filedata) " +
             "VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
@@ -32,5 +33,8 @@ public interface FileMapper {
 
     @Select("SELECT * FROM FILES WHERE fileId=#{id} AND userid=#{user}")
     File getFile(Integer id, Integer user);
+
+    @Select("SELECT count(*) FROM FILES WHERE filename=#{fileName} AND userid=#{user}")
+    Integer getFilesCount(String fileName, Integer user);
 
 }

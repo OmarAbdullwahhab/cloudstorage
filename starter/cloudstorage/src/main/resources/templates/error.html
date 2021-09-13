@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<h1>Error occurred</h1>
+<p>
+    We're sorry, an error happened while processing your request</p>
+<p>
+    Error status code : <span th:text="${statusCode}"></span>
+</p>
+<p>
+   Error message: <span th:text="${errorMessage}"></span>
+</p>
+<p>
+    Go back to <a href="/home">home page</a>.
+</p>
+</body>
+</html>

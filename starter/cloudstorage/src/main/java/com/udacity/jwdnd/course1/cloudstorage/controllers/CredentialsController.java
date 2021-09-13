@@ -39,14 +39,14 @@ public class CredentialsController {
 
             this.credentialService.updateCredential(credentialForm);
             redirectAttributes.addFlashAttribute("message",
-                    "You successfully updated the note!");
+                    "You successfully updated the credentials!");
         }
         else
         {
 
             this.credentialService.addCredential(credentialForm);
             redirectAttributes.addFlashAttribute("message",
-                    "You successfully added the note!");
+                    "You successfully added the credentials!");
         }
 
         return "redirect:/home";
@@ -56,10 +56,11 @@ public class CredentialsController {
     public String deleteCredential(@PathVariable("id")String id, Model Model, RedirectAttributes redirectAttributes)
     {
         int userId = this.authenticationService.currentLoggedInUser().getUserid();
+
         Integer cred = Integer.parseInt(id);
         this.credentialService.deleteCredential(cred,userId);
         redirectAttributes.addFlashAttribute("message",
-                "You successfully deleted the note!");
+                "You successfully deleted the credentials!");
 
         return "redirect:/home";
     }
